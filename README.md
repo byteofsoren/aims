@@ -1,8 +1,8 @@
 # AppImage Management System(AIMS)
 This program aim's to be used to manage AppImages available on GitHub releases pages.
-The thoughts behind AIM is to be able to install those AppImages on the local computer with as little effort as possible.
+The thoughts behind AIMS is to be able to install those AppImages on the local computer with as little effort as possible.
 
-# How to use AIM
+# How to use AIMS
 First begin with listing the inbuilt help function
 
 ```
@@ -10,7 +10,7 @@ $ python aims.py -h
 
 usage: aims.py [-h] [-n NAME] [-N NAME] action
 
-AppImage Manager for Linux (aim)
+AppImage Manager for Linux (aims)
 
 Positional arguments:
   action            Action to preform: search, install, update, show, debug
@@ -52,7 +52,7 @@ That would then launch FreeCAD link stage 3.
 > Note: In the -h --help i also show that -N can be used to use personal repos.
 > That functionality is not completed. That would be a future work.
 
-Then you can use the `show` argument that shows what repos are installed and tracked by aim.
+Then you can use the `show` argument that shows what repos are installed and tracked by aims.
 
 ```
 $ python aims.py show
