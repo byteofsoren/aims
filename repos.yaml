@@ -1,0 +1,43 @@
+SmallBASIC_Console:
+  link: smallbasic/SmallBASIC
+  platform: ["GitHub", "releases"]
+  installation:
+    path: smallbasic
+    symlink: 1
+  description: "SmallBASIC is a fast and easy to learn BASIC language interpreter ideal for everyday calculations, scripts and prototypes. SmallBASIC includes trigonometric, matrices and algebra functions, a built in IDE, a powerful string library, system, sound, and graphic commands along with structured programming syntax "
+  regex:
+    filename: 'SmallBASIC-Console_\d{2}.\d{2}-x86_64.AppImage'
+    version: '\d{2}.\d{2}'
+
+FreeCADlink:
+  link: realthunder/FreeCAD
+  platform: GitHub
+  installation:
+    path: freecad
+    symlink: 1
+  description: "FreeCAD link stage 3 branch"
+  regex:
+    filename: 'FreeCAD-Link-Stable-Linux-x86_64-py3.\d{2}-\d{8}.AppImage'
+    version: '\d{8}stable'
+
+FreeCADondsel:
+  link: Ondsel-Development/FreeCAD
+  platform: GitHub
+  installation:
+    path: freecad
+    symlink: 1
+  description: "FreeCAD Ondsel-Development branch"
+  regex:
+    filename: 'Ondsel_Assembly_Playground_\d\.\d{2}\.\d{5}-Linux-x86_64\.AppImage'
+    version: '\d\.\d{2}\.\d{5}'
+
+OrcaSlicer:
+  link: SoftFever/OrcaSlicer
+  platform: GitHub
+  installation:
+    path: orca
+    symlink: 1
+  description: "G-code generator for 3D printers (Bambu, Prusa, Voron, VzBot, RatRig, Creality, etc.)"
+  regex:
+    filename: 'OrcaSlicer_Linux_[v,V]\d\.\d*\.\d\.AppImage'
+    version: '[v,V]\d\.\d*\.\d'

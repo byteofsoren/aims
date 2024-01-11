@@ -1,0 +1,6 @@
+sysconfig:
+  user_path: "~/bin/"
+  system_path: None
+yamls:
+  installed_appimages: "~/.config/AppImages_installer/installed_appimaegs.yaml"
+
