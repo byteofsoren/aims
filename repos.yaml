@@ -31,6 +31,17 @@ FreeCADondsel:
     filename: 'Ondsel_Assembly_Playground_\d\.\d{2}\.\d{5}-Linux-x86_64\.AppImage'
     version: '\d\.\d{2}\.\d{5}'
 
+FreeCAD:
+  link: FreeCAD/FreeCAD
+  platform: GitHub
+  installation:
+    path: freecad
+    symlink: 1
+  description: "Official source code of FreeCAD, a free and opensource multiplatform 3D parametric modeler."
+  regex:
+    filename: 'FreeCAD-\d\.\d{2}\.\d-Linux-x86_64\.AppImage'
+    version: '\d\.\d{2}\.\d'
+
 OrcaSlicer:
   link: SoftFever/OrcaSlicer
   platform: GitHub

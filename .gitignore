@@ -176,7 +176,7 @@ pyrightconfig.json
 # End of https://www.toptal.com/developers/gitignore/api/python
 
 # Don't upload the responce.html file
-./responce.html
+responce.html
 
 
 
