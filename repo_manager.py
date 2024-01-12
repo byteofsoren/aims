@@ -234,7 +234,7 @@ def update_appimage(repo):
     if updated:
         print("Packages where updated")
     else:
-        print("Packages where not updated")
+        print("No packages to update")
 
 
 def search_appimages(search_term: str, repos: dict):
