@@ -208,9 +208,9 @@ def update_appimage(repo):
         installed_appimages = load_installed_images()
     except Exception as e:
         raise e
-    # app = installed_appimages[appimage_name]
+    updated = False
     for appimage_name in installed_appimages.keys():
-        print(f"Checking {appimage_name}")
+        print(f"Checking {Colors.blue}{appimage_name}{Colors.reset}")
         app = installed_appimages[appimage_name]
         installed_appimage_file_name = app['filename']
 
@@ -218,15 +218,23 @@ def update_appimage(repo):
         newer_filename, url = find_latest_file_name(repo, appimage_name)
         if not newer_filename:
             raise Exception(
-                f"Filename: `{newer_filename}` is empty, do nothing")
+                f"Filename: `{newer_filename}` is empty. \
+                        Probably problem with the regular expression")
         # Compare it with installed
         if installed_appimage_file_name.lower() == newer_filename.lower():
             print("Both are equal, no update")
-            break
-        print(f"Removing the older AppImage {installed_appimage_file_name}")
+            continue
+        print("Updating")
+        updated = True
+        print(f"1. Removing the older AppImage {installed_appimage_file_name}")
         remove_appimage(appimage_name)
-        print(f"Installing the newer AppImage {newer_filename}")
+        print(f"2. Installing the newer AppImage {newer_filename}")
         install_appimage(appimage_name)
+        print("3. Done")
+    if updated:
+        print("Packages where updated")
+    else:
+        print("Packages where not updated")
 
 
 def search_appimages(search_term: str, repos: dict):
