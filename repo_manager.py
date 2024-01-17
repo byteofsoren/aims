@@ -229,7 +229,7 @@ def update_appimage(repo):
         print(f"1. Removing the older AppImage {installed_appimage_file_name}")
         remove_appimage(appimage_name)
         print(f"2. Installing the newer AppImage {newer_filename}")
-        install_appimage(appimage_name)
+        install_appimage(appimage_name, repo)
         print("3. Done")
     if updated:
         print("Packages where updated")
