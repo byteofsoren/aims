@@ -45,6 +45,7 @@ def install_appimage(appimage_name: str, repo: ConfigManager):
     path = os.path.expanduser(
         config['sysconfig']['user_path']) + app['installation']['path'] + "/"
     user_path = os.path.expanduser(config['sysconfig']['user_path'])
+    symlink_path = os.path.expanduser(config['sysconfig']['symlink_path'])
 
     # Create a path to where the file should be downloaded to.
     local_file_path = os.path.join(path, filename)
@@ -88,10 +89,12 @@ def install_appimage(appimage_name: str, repo: ConfigManager):
 
         # Create a symlink from
         sym_target = os.path.join(
-            user_path, appimage_name.lower())
+            symlink_path, appimage_name.lower())
         try:
             if os.path.exists(sym_target) and os.path.islink(sym_target):
-                print("Path existed and is alink removed link")
+                print(
+                    "Path existed and is alink, \
+                     removed link to cerate new link")
                 os.remove(sym_target)
 
             if os.path.exists(sym_target) and os.path.isdir(sym_target):
