@@ -52,3 +52,15 @@ OrcaSlicer:
   regex:
     filename: 'OrcaSlicer_Linux_[v,V]\d\.\d*\.\d\.AppImage'
     version: '[v,V]\d\.\d*\.\d'
+
+QElectroTech:
+  link: qelectrotech/qelectrotech-source-mirror
+  platform: GitHub
+  installation:
+    path: qelectrotech
+    symlink: 1
+  description: "QElectroTech, or QET in short, is a libre and open source desktop application to create diagrams and schematics."
+  regex:
+    filename: 'QElectroTech_\d\.\d*-r\d{4,6}-x86_64.AppImage'
+    version: '\d\.\d*'
+    # version: '0.9-r7759-'

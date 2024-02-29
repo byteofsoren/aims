@@ -3,6 +3,7 @@ import re
 
 import requests
 
+from colors import Colors
 from config_manager import ConfigManager
 
 
@@ -46,6 +47,12 @@ def find_latest_file_name(local_repo, appimage_name):
 
     if not matches:
         print("No matching AppImage found on the releases page")
+        print("DebugOutput")
+        Colors.varprint(link, Colors.red)
+        Colors.varprint(user, Colors.red)
+        Colors.varprint(filename_regex, Colors.red)
+        Colors.varprint(version_regex, Colors.red)
+        Colors.varprint(url, Colors.red)
         return
     appimage_url = matches[0]
     matches = re.findall(filename_regex, appimage_url)

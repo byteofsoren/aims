@@ -13,3 +13,8 @@ class Colors(object):
     cyan = '\033[0;36m'
     white = '\033[0;37m'
     reset = '\033[0m'
+
+    @staticmethod
+    def varprint(var, color):
+        var, value = f"{var=}".split('=')
+        print(f"{Colors.blue}{var}{Colors.reset}={color}{value}{Colors.reset}")

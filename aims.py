@@ -1,6 +1,5 @@
 import argparse
-
-import yaml
+import pdb
 
 from colors import Colors
 from config_manager import ConfigManager
@@ -25,7 +24,7 @@ def main():
     args = parser.parse_args()
 
     # Load configuration and repository data
-    config = ConfigManager('config.yaml')
+    # config = ConfigManager('config.yaml') # Not used right now
     official_repos = ConfigManager('repos.yaml')
 
     try:
@@ -68,7 +67,10 @@ def main():
     elif args.action == 'debug':
         if args.name:
             get_github_data(official_repos, args.name)
-            fname, url = find_latest_file_name(official_repos, args.name)
+            try:
+                fname, url = find_latest_file_name(official_repos, args.name)
+            except TypeError:
+                return
             print("Fond this:")
             print(f"File name: {Colors.yellow}{fname}{Colors.reset}")
             print(f"url:{Colors.blue}{url}{Colors.reset}")
