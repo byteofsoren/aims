@@ -28,8 +28,8 @@ FreeCADondsel:
     symlink: 1
   description: "FreeCAD Ondsel-Development branch"
   regex:
-    filename: 'Ondsel_Assembly_Playground_\d\.\d{2}\.\d{5}-Linux-x86_64\.AppImage'
-    version: '\d\.\d{2}\.\d{5}'
+    filename: 'Ondsel_[^"\/]+x86_64\.AppImage'
+    version: '\d{4}\.\d\.\d'
 
 FreeCAD:
   link: FreeCAD/FreeCAD
@@ -63,4 +63,14 @@ QElectroTech:
   regex:
     filename: 'QElectroTech_\d\.\d*-r\d{4,6}-x86_64.AppImage'
     version: '\d\.\d*'
-    # version: '0.9-r7759-'
+
+LibreCAD:
+  link: LibreCAD/LibreCAD
+  platform: GitHub
+  installation:
+    path: librecad
+    symlink: 1
+  description: "LibreCAD is a cross-platform 2D CAD program written in C++17 using the Qt framework. It can read DXF and DWG files and can write DXF, PDF and SVG files. The user interface is highly customizable, and has dozens of translations."
+  regex:
+    filename: 'LibreCAD-\d\.\d\.\d_alpha-\d{2,4}-[a-z0-9]{1,10}-x86_64\.AppImage'
+    version: ''

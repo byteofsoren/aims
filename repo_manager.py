@@ -9,6 +9,7 @@ from fuzzywuzzy import process
 from colors import Colors
 from config_manager import ConfigManager
 from github_api import download_appimage, find_latest_file_name
+from status import Status
 from utils import ask
 
 
@@ -27,11 +28,17 @@ def install_appimage(appimage_name: str, repo: ConfigManager):
     version_regex = app['regex']['version']
 
     # Contact GitHub and get the latest filename and url
-    filename, url = find_latest_file_name(repo, appimage_name)
+    try:
+        filename, url = find_latest_file_name(repo, appimage_name)
+    except ValueError as ve:
+        Status.error(
+            "repo_manager.py install_appimage did",
+            "not find a appimage on GitHub")
+        raise ve
     version = re.findall(version_regex, filename)
 
     # Load the configuration files
-    print(f"Found {filename} at {url}")
+    # Status.info(f"Found {filename} at {url}")
     config = ConfigManager('config.yaml')
     installed_appimages_file = os.path.expanduser(
         config['yamls']['installed_appimages'])
@@ -44,7 +51,7 @@ def install_appimage(appimage_name: str, repo: ConfigManager):
     # It becomes someting like $HOME/bin/AppImage_name
     path = os.path.expanduser(
         config['sysconfig']['user_path']) + app['installation']['path'] + "/"
-    user_path = os.path.expanduser(config['sysconfig']['user_path'])
+    # user_path = os.path.expanduser(config['sysconfig']['user_path'])
     symlink_path = os.path.expanduser(config['sysconfig']['symlink_path'])
 
     # Create a path to where the file should be downloaded to.
@@ -52,38 +59,41 @@ def install_appimage(appimage_name: str, repo: ConfigManager):
 
     if not os.path.exists(path):
         # Make path no package installed
-        print("No path existed")
+        # Status.info("No path existed")
         os.makedirs(path)
 
     if os.path.exists(path) and os.path.isdir(path):
         # Package was already installed check files.
-        print("Path existed checking files")
+        # Status.info("Path existed checking files")
 
         file_path_exist = os.path.exists(local_file_path)
         file_path_isfile = os.path.exists(local_file_path)
 
         if file_path_exist and file_path_isfile:
-            print("File existed. Same version do nothing.")
+            # Status.info("File existed. Same version do nothing.")
             return
         elif file_path_exist and not file_path_isfile:
-            print("File was not a file ERROR")
+            # Status.info("File was not a file ERROR")
             return
 
         # Get all files in in the path diretory.
         matching_files = find_matching_files(path, filename_regex)
+        Status.info(f"Found {len(matching_files)} matching files in the repo")
+        # if not matching_files:
+        #     raise ValueError("Matching files list is empty")
         # Remove the old AppImages
-        print("Removing old AppImages")
+        # Status.info("Removing old AppImages")
         for file in matching_files:
-            print(".", end='')
+            # Status.info(".", end='')
             full_path = os.path.join(path, file)
             os.remove(full_path)
-        print("]")
+        # Status.info("]")
 
         # Download the image form GitHub
         download_appimage(url, path, filename)
 
         # Set the right premissions.
-        print(local_file_path)
+        # Status.info(local_file_path)
         st = os.stat(local_file_path)
         os.chmod(local_file_path, st.st_mode | stat.S_IEXEC)
 
@@ -92,13 +102,12 @@ def install_appimage(appimage_name: str, repo: ConfigManager):
             symlink_path, appimage_name.lower())
         try:
             if os.path.exists(sym_target) and os.path.islink(sym_target):
-                print(
-                    "Path existed and is alink, \
-                     removed link to cerate new link")
+                # Status.info(
+                #     "Path existed and is alink, \
+                #      removed link to cerate new link")
                 os.remove(sym_target)
 
             if os.path.exists(sym_target) and os.path.isdir(sym_target):
-                print("Target path and the stored dir has the same name")
                 os.symlink(local_file_path, f"{sym_target}_app")
             elif os.path.exists(sym_target) and not os.path.islink(sym_target):
                 raise Exception("Path existed but was not a symlink")
@@ -161,25 +170,25 @@ def remove_appimage(appimage_name: str):
     if os.path.exists(symlink) and os.path.islink(symlink):
         os.unlink(symlink)
     else:
-        print("No symlink was found, continuing")
+        Status.info("No symlink was found, continuing")
 
     # Remove old AppImage
     if os.path.exists(path) and os.path.isfile(path):
-        print(f"Removing file {path}")
+        Status.info(f"Removing file {path}")
         try:
             os.remove(path)
         except PermissionError as pe:
-            print(f"Could not remove {path} {pe}")
+            Status.error(f"Could not remove {path} {pe}")
             raise pe
     elif os.path.exists(app) and os.path.isdir(path):
         raise Exception("Wrong installation target to remove")
 
-    print("Removing entry {appimage_name} from installed AppImages")
+    Status.info("Removing entry {appimage_name} from installed AppImages")
     del installed_appimages[appimage_name]
 
     # Save changes to the installed appimages yaml file.
     installed_appimages.save()
-    print(f"Done removing {appimage_name}")
+    Status.info(f"Done removing {appimage_name}")
 
 
 def find_matching_files(directory_path, filename_regex):
@@ -194,6 +203,11 @@ def find_matching_files(directory_path, filename_regex):
             matching_files.append(entry)
 
     print(']')
+
+    if len(matching_files) > 0:
+        Status.ok(f"Found {len(matching_files)} st matching files")
+    else:
+        Status.error("Found no matching files")
     return matching_files
 
 
@@ -213,7 +227,7 @@ def update_appimage(repo):
         raise e
     updated = False
     for appimage_name in installed_appimages.keys():
-        print(f"Checking {Colors.blue}{appimage_name}{Colors.reset}")
+        Status.info(f"Checking {Colors.blue()}{appimage_name}{Colors.reset}")
         app = installed_appimages[appimage_name]
         installed_appimage_file_name = app['filename']
 
@@ -225,25 +239,26 @@ def update_appimage(repo):
                         Probably problem with the regular expression")
         # Compare it with installed
         if installed_appimage_file_name.lower() == newer_filename.lower():
-            print("Both are equal, no update")
+            Status.info("Both are equal, no update")
             continue
-        print("Updating")
+        Status.info("Updating")
         updated = True
-        print(f"1. Removing the older AppImage {installed_appimage_file_name}")
+        Status.info(
+            f"1. Removing the older AppImage {installed_appimage_file_name}")
         remove_appimage(appimage_name)
-        print(f"2. Installing the newer AppImage {newer_filename}")
+        Status.info(f"2. Installing the newer AppImage {newer_filename}")
         install_appimage(appimage_name, repo)
-        print("3. Done")
+        Status.info("3. Done")
     if updated:
-        print("Packages where updated")
+        Status.info("Packages where updated")
     else:
-        print("No packages to update")
+        Status.info("No packages to update")
 
 
 def search_appimages(search_term: str, repos: dict):
     """
     Searches for AppImmages that can be installed by this system.
-    Prints out a formatted list of search hits.
+    Status.infos out a formatted list of search hits.
 
     Arguments:
         search_term (str): What is searched for.
@@ -270,11 +285,11 @@ def search_appimages(search_term: str, repos: dict):
             pruned_results[name] = description
 
     for app in pruned_results.keys():
-        print("")
-        print(f"{Colors.blue}{app}{Colors.reset}")
+        Status.info("")
+        Status.info(f"{Colors.blue()}{app}{Colors.reset}")
         text = pruned_results[app]
-        print(textwrap.fill(text,
-                            initial_indent="  ", subsequent_indent="  "))
+        Status.info(textwrap.fill(text,
+                                  initial_indent="  ", subsequent_indent="  "))
 
 
 def show_installed_appimages():
@@ -282,12 +297,17 @@ def show_installed_appimages():
     Shows a list of appimages that the system aim tracks.
     """
     try:
+        Status.info("Loading installed appimages")
         installed_appimages = load_installed_images()
+        Status.info("Found {len(installed_appimages)}st installed images")
+
     except Exception as e:
+        Status.error("Loading of installed appimages errored out")
         raise e
     for app in installed_appimages.keys():
         meta = installed_appimages[app]
-        # breakpoint()
-        print(f"{Colors.yellow}{app}{Colors.reset}")
-        print(f" FileName: {Colors.blue}{meta['filename']}{Colors.reset}")
-        print(f" Symlink: {Colors.cyan}{meta['symlink']}{Colors.reset}")
+        print(f"{Colors.yellow()}{app}{Colors.reset}")
+        print(
+            f" FileName: {Colors.blue()}{meta['filename']}{Colors.reset}")
+        print(
+            f" Symlink: {Colors.cyan()}{meta['symlink']}{Colors.reset}")

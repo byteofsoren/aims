@@ -6,6 +6,7 @@ from config_manager import ConfigManager
 from github_api import find_latest_file_name, get_github_data
 from repo_manager import (install_appimage, remove_appimage, search_appimages,
                           show_installed_appimages, update_appimage)
+from status import Status
 
 
 def main():
@@ -31,7 +32,7 @@ def main():
         personal_repos = ConfigManager('personalrepos.yaml')
     except Exception:
         # personal_repos = None
-        print("Personal repos not used")
+        Status.info("Personal repos not used")
 
     # try:
     #     installed_appimages_file = config['ymls']['installed_appimages']
@@ -54,10 +55,16 @@ def main():
     # INSTALL
     elif args.action == 'install':
         if args.name:
-            install_appimage(args.name, official_repos)
+            try:
+                install_appimage(args.name, official_repos)
+            except Exception as e:
+                Status.error("Exception: ", e)
+                Status.show()
+                raise e
         elif args.Name:
             if len(personal_repos) == 0:
-                print("Personla repo has no entries")
+                Status.error("Personla repo has no entries")
+                Status.show()
                 return
                 # install_appimage(args.name, official_repo,\
                 # personal_repos, config)
@@ -70,12 +77,15 @@ def main():
             try:
                 fname, url = find_latest_file_name(official_repos, args.name)
             except TypeError:
+                Status.error("Type error of find_latest_file_name() function")
+                Status.show()
                 return
-            print("Fond this:")
-            print(f"File name: {Colors.yellow}{fname}{Colors.reset}")
-            print(f"url:{Colors.blue}{url}{Colors.reset}")
+            # print("Fond this:")
+            # print(f"File name: {Colors.yellow()}{fname}{Colors.reset}")
+            # print(f"url:{Colors.blue()}{url}{Colors.reset}")
+            Status.show()
             if fname:
-                print(f"{Colors.green}OK{Colors.reset} it worked")
+                print(f"{Colors.green()}OK{Colors.reset} it worked")
 
     elif args.action == 'update':
         update_appimage(official_repos)
@@ -89,7 +99,12 @@ def main():
             print("Please specify the name of the AppImage to update.")
 
     elif args.action == 'show':
-        show_installed_appimages()
+        try:
+            show_installed_appimages()
+        except Exception as e:
+            Status.error("Show_installed_appimages errored out")
+            Status.show()
+            raise e
 
     else:
         print("Invalid action. Please choose ether:")
@@ -98,3 +113,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    # Status.show()

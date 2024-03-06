@@ -16,7 +16,6 @@ class ConfigManager(object):
         if file_path:
             self.usefile = True
             self.path = file_path
-            print(self.path)
             self._load_config()
             if self.config is None:
                 raise Exception("Configuration not loaded")
@@ -32,6 +31,9 @@ class ConfigManager(object):
         if key in self.config:
             del self.config[key]
             self.save()
+
+    def __contains__(self, item):
+        return item in self.config.keys()
 
     def __len__(self):
         return len(self.config.keys())

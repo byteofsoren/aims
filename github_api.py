@@ -5,6 +5,7 @@ import requests
 
 from colors import Colors
 from config_manager import ConfigManager
+from status import Status
 
 
 def find_latest_file_name(local_repo, appimage_name):
@@ -22,52 +23,61 @@ def find_latest_file_name(local_repo, appimage_name):
 
     print(f"find_file_name {local_repo.path} with {appimage_name}")
     link = local_repo[appimage_name]['link']
+    Status.info("Link=", link)
     user, repo = link.split("/")
-    link = link.replace("/", r"\/")
+    Status.info(f"GitHub {user=}, {repo=}")
+    split_link = link.replace("/", r"\/")
+    Status.info("Replaced / with \/ Link=", split_link)
     filename_regex = local_repo[appimage_name]['regex']['filename']
     version_regex = local_repo[appimage_name]['regex']['version']
-    # print(link, re.escape(link))
 
     # Download information from github
     url = f"https://api.github.com/repos/{user}/{repo}/releases/latest"
+    Status.url("GitHub", url)
+
     response = requests.get(url)
+    Status.info(f"{response.status_code=}")
     if response.status_code != 200:
-        print("Error accessing the GitHub releases page")
+        Status.error("Error: Did not get html data",
+                     response.status_code)
         return
 
     # Save responce to a file for debugging.
     # with open("responce.html", "w") as htmlf:
     #     htmlf.write(response.text)
 
-    pattern = r'https://github.com/' + link + r'\/releases\/download\/' + \
+    pattern = r'https://github.com/' + split_link + \
+        r'\/releases\/download\/' + \
         version_regex + r'/' + filename_regex
+    Status.info(f"{pattern=}")
 
     # Extract the correct AppImage link
     matches = re.findall(pattern, response.text)
 
     if not matches:
-        print("No matching AppImage found on the releases page")
-        print("DebugOutput")
-        Colors.varprint(link, Colors.red)
-        Colors.varprint(user, Colors.red)
-        Colors.varprint(filename_regex, Colors.red)
-        Colors.varprint(version_regex, Colors.red)
-        Colors.varprint(url, Colors.red)
-        return
+        print(response.text)
+        Status.error("No matching AppImage found!",
+                     f"Tweek the regex for {link} AppImage")
+        raise ValueError("No matching AppImage found on the releases page")
+    Status.info(f"Found {len(matches)} st matches")
     appimage_url = matches[0]
     matches = re.findall(filename_regex, appimage_url)
-    if not matches:
-        raise Exception("No matching AppImage found on the releases page")
     filename = matches[0]
+    Status.info(f"{filename=}; {appimage_url=}")
 
     return filename, appimage_url
 
 
 def get_github_data(local_repo, appimage_name):
     print(f"get_github_data {local_repo.path} with {appimage_name}")
+    if appimage_name not in local_repo:
+        print(f"{Colors.yellow()}The name {Colors.blue()}{appimage_name}\
+                {Colors.yellow()} does not exist in the \
+                data base{Colors.reset}")
+        raise ValueError
     link = local_repo[appimage_name]['link']
     user, repo = link.split("/")
-    link = link.replace("/", r"\/")
+    # split_link = link.replace("/", r"\/")
 
     # Download information from github
     url = f"https://api.github.com/repos/{user}/{repo}/releases/latest"
