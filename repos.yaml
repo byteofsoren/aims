@@ -50,8 +50,8 @@ OrcaSlicer:
     symlink: 1
   description: "G-code generator for 3D printers (Bambu, Prusa, Voron, VzBot, RatRig, Creality, etc.)"
   regex:
-    filename: 'OrcaSlicer_Linux_[v,V]\d\.\d*\.\d\.AppImage'
-    version: '[v,V]\d\.\d*\.\d'
+    filename: 'OrcaSlicer_Linux_[vV][\d\.]{5}\.AppImage'
+    version: '[vV][\d\.]{5}'
 
 QElectroTech:
   link: qelectrotech/qelectrotech-source-mirror

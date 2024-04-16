@@ -12,6 +12,18 @@ class Status(object):
             print(message)
 
     @staticmethod
+    def filename(fname: str, description: str):
+        """
+        filename
+        Call this function like this
+        Colors.filename("myfile.txt", "My memory file")
+        """
+        mes = f"[{Colors.blue}FNAME{Colors.reset}] \
+                {Colors.cyan(fname)} {description}"
+        Status.messages.append(mes)
+        return mes
+
+    @staticmethod
     def varprint(varstr: str):
         """
         varprint

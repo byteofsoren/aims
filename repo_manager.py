@@ -30,6 +30,8 @@ def install_appimage(appimage_name: str, repo: ConfigManager):
     # Contact GitHub and get the latest filename and url
     try:
         filename, url = find_latest_file_name(repo, appimage_name)
+        Status.url("latest file name url", url)
+        Status.filename(filename, "find_latest_file_name")
     except ValueError as ve:
         Status.error(
             "repo_manager.py install_appimage did",

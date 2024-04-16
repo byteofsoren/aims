@@ -52,17 +52,29 @@ def find_latest_file_name(local_repo, appimage_name):
     Status.info(f"{pattern=}")
 
     # Extract the correct AppImage link
-    matches = re.findall(pattern, response.text)
+    appimage_urls = re.findall(pattern, response.text)
 
-    if not matches:
+    if not appimage_urls:
         print(response.text)
         Status.error("No matching AppImage found!",
                      f"Tweek the regex for {link} AppImage")
+        breakpoint()
         raise ValueError("No matching AppImage found on the releases page")
-    Status.info(f"Found {len(matches)} st matches")
-    appimage_url = matches[0]
-    matches = re.findall(filename_regex, appimage_url)
-    filename = matches[0]
+
+    Status.info(f"Found {len(appimage_urls)} st pattern matches")
+
+    # Select the first match
+    # TODO: Implement a way to select matches in the future
+    appimage_url = appimage_urls[0]
+    # Find the file name that is used to store the file localy.
+    file_matches = re.findall(filename_regex, appimage_url)
+    if not file_matches:
+        Status.error("Patter found but not the file")
+        raise ValueError("No file match")
+
+    # Select the first match
+    # TODO: Implement a way to select matches in the future
+    filename = file_matches[0]
     Status.info(f"{filename=}; {appimage_url=}")
 
     return filename, appimage_url
