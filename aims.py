@@ -108,7 +108,11 @@ def main():
 
     else:
         print("Invalid action. Please choose ether:")
-        print("  'search', 'install', or 'update'.")
+        print("\tsearch -n [name of package]")
+        print("\tinstall -n [name of package]")
+        print("\tupdate")
+        print("\tremove")
+        print("\tshow")
 
 
 if __name__ == "__main__":
