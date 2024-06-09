@@ -31,25 +31,35 @@ def find_latest_file_name(local_repo, appimage_name):
     filename_regex = local_repo[appimage_name]['regex']['filename']
     version_regex = local_repo[appimage_name]['regex']['version']
 
-    # Download information from github
+    # Prepare the URL
     url = f"https://api.github.com/repos/{user}/{repo}/releases/latest"
+    use_latest_exists = "use_latest" in local_repo[appimage_name]
+    if use_latest_exists and local_repo[appimage_name]["use_latest"] is False:
+        url = f"https://api.github.com/repos/{user}/{repo}/releases"
+
     Status.url("GitHub", url)
 
+    # Download information from github
     response = requests.get(url)
-    Status.info(f"{response.status_code=}")
     if response.status_code != 200:
         Status.error("Error: Did not get html data",
                      response.status_code)
         return
+    # On no error report status code as just info
+    Status.ok(f"{response.status_code=}")
+    if len(response.text) == 0:
+        Status.error("Error: The captured text has no length")
+        return
+    Status.info(f"Responce text has {len(response.text)} characters")
 
     # Save responce to a file for debugging.
-    # with open("responce.html", "w") as htmlf:
-    #     htmlf.write(response.text)
+    with open("responce.html", "w") as htmlf:
+        htmlf.write(response.text)
 
     pattern = r'https://github.com/' + split_link + \
         r'\/releases\/download\/' + \
         version_regex + r'/' + filename_regex
-    Status.info(f"{pattern=}")
+    Status.info(f"pattern={Colors.blue(pattern)}")
 
     # Extract the correct AppImage link
     appimage_urls = re.findall(pattern, response.text)
@@ -58,7 +68,7 @@ def find_latest_file_name(local_repo, appimage_name):
         print(response.text)
         Status.error("No matching AppImage found!",
                      f"Tweek the regex for {link} AppImage")
-        breakpoint()
+        # breakpoint()
         raise ValueError("No matching AppImage found on the releases page")
 
     Status.info(f"Found {len(appimage_urls)} st pattern matches")

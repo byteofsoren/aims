@@ -288,10 +288,10 @@ def search_appimages(search_term: str, repos: dict):
 
     for app in pruned_results.keys():
         Status.info("")
-        Status.info(f"{Colors.blue()}{app}{Colors.reset}")
+        print(f"{Colors.blue()}{app}{Colors.reset}")
         text = pruned_results[app]
-        Status.info(textwrap.fill(text,
-                                  initial_indent="  ", subsequent_indent="  "))
+        print(textwrap.fill(text,
+                            initial_indent="  ", subsequent_indent="  "))
 
 
 def show_installed_appimages():

@@ -42,6 +42,18 @@ FreeCAD:
     filename: 'FreeCAD-\d\.\d{2}\.\d-Linux-x86_64\.AppImage'
     version: '\d\.\d{2}\.\d'
 
+FreeCADweekly:
+  link: FreeCAD/FreeCAD-Bundle
+  use_latest: False
+  platform: GitHub
+  installation:
+    path: freecad
+    symlink: 1
+  description: "Stand-alone repo to Build and Deploy installable FreeCAD images."
+  regex:
+    filename: 'FreeCAD_weekly-builds-\d*-conda-Linux-x86_64-py\d{3}\.AppImage'
+    version: 'weekly-builds'
+
 OrcaSlicer:
   link: SoftFever/OrcaSlicer
   platform: GitHub
