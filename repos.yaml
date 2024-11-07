@@ -42,6 +42,18 @@ FreeCAD:
     filename: 'FreeCAD-\d\.\d{2}\.\d-Linux-x86_64\.AppImage'
     version: '\d\.\d{2}\.\d'
 
+FreeCADrc:
+  link: FreeCAD/FreeCAD
+  use_latest: False
+  platform: GitHub
+  installation:
+    path: freecad
+    symlink: 1
+  description: "Official source code of FreeCAD, a free and opensource multiplatform 3D parametric modeler."
+  regex:
+    filename: 'FreeCAD_\d\.\d\.\dRC\d-conda-Linux-x86_64-py\d\d\d\.AppImage'
+    version: '\d\.\drc\d'
+
 FreeCADweekly:
   link: FreeCAD/FreeCAD-Bundle
   use_latest: False

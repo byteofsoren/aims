@@ -1,6 +1,7 @@
 import os
 import re
 import stat
+import sys
 import textwrap
 
 import yaml
@@ -199,10 +200,11 @@ def find_matching_files(directory_path, filename_regex):
 
     print("Matching filenames [")
     for entry in os.listdir(directory_path):
-        print('.', end='.')
         full_path = os.path.join(directory_path, entry)
         if os.path.isfile(full_path) and pattern.match(entry):
             matching_files.append(entry)
+        print('.', end='.')
+        sys.stdout.flush()
 
     print(']')
 
