@@ -1,5 +1,6 @@
 import os
 import re
+import sys
 
 import requests
 
@@ -131,6 +132,7 @@ def download_appimage(url, path, filename):
                 if counter > 100:
                     print(".", end="")
                     counter = 0
+                    sys.stdout.flush()
                 file.write(chunk)
         print("]")
         print(f"AppImage downladed successfully: {full_path}")
