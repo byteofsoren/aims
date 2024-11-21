@@ -39,8 +39,8 @@ FreeCAD:
     symlink: 1
   description: "Official source code of FreeCAD, a free and opensource multiplatform 3D parametric modeler."
   regex:
-    filename: 'FreeCAD-\d\.\d{2}\.\d-Linux-x86_64\.AppImage'
-    version: '\d\.\d{2}\.\d'
+    filename: 'FreeCAD_\d\.\d\.\d-conda-Linux-x86_64-py\d{2,3}\.AppImage'
+    version: '\d\.\d{1,2}\.\d'
 
 FreeCADrc:
   link: FreeCAD/FreeCAD

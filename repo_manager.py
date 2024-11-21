@@ -238,6 +238,7 @@ def update_appimage(repo):
         # Find latest file name
         newer_filename, url = find_latest_file_name(repo, appimage_name)
         if not newer_filename:
+            Status.show()
             raise Exception(
                 f"Filename: `{newer_filename}` is empty. \
                         Probably problem with the regular expression")

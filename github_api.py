@@ -28,7 +28,7 @@ def find_latest_file_name(local_repo, appimage_name):
     user, repo = link.split("/")
     Status.info(f"GitHub {user=}, {repo=}")
     split_link = link.replace("/", r"\/")
-    Status.info("Replaced / with \/ Link=", split_link)
+    Status.info("Replaced / with \\/ Link=", split_link)
     filename_regex = local_repo[appimage_name]['regex']['filename']
     version_regex = local_repo[appimage_name]['regex']['version']
 
@@ -66,11 +66,13 @@ def find_latest_file_name(local_repo, appimage_name):
     appimage_urls = re.findall(pattern, response.text)
 
     if not appimage_urls:
-        print(response.text)
+        # print(response.text)
         Status.error("No matching AppImage found!",
                      f"Tweek the regex for {link} AppImage")
-        # breakpoint()
-        raise ValueError("No matching AppImage found on the releases page")
+        Status.show()
+        raise ValueError(
+            f"""No matching AppImage named {appimage_name}
+            found on the releases page""")
 
     Status.info(f"Found {len(appimage_urls)} st pattern matches")
 
@@ -81,6 +83,7 @@ def find_latest_file_name(local_repo, appimage_name):
     file_matches = re.findall(filename_regex, appimage_url)
     if not file_matches:
         Status.error("Patter found but not the file")
+        Status.show()
         raise ValueError("No file match")
 
     # Select the first match
@@ -97,6 +100,7 @@ def get_github_data(local_repo, appimage_name):
         print(f"{Colors.yellow()}The name {Colors.blue()}{appimage_name}\
                 {Colors.yellow()} does not exist in the \
                 data base{Colors.reset}")
+        Status.show()
         raise ValueError
     link = local_repo[appimage_name]['link']
     user, repo = link.split("/")
@@ -119,6 +123,7 @@ def get_github_data(local_repo, appimage_name):
 def download_appimage(url, path, filename):
     full_path = os.path.join(path, filename)
     if not os.path.exists(path):
+        Status.show()
         raise Exception(f"Path did not exit {path}")
     try:
         responce = requests.get(url, stream=True)
@@ -137,5 +142,6 @@ def download_appimage(url, path, filename):
         print("]")
         print(f"AppImage downladed successfully: {full_path}")
     except Exception as e:
+        Status.show()
         print(f"Error downloading the file: {e}")
         raise e
